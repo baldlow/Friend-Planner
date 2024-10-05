@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
   friendlyName: {type: String, required: true},
-  calendarId: {type: Number, required: true},
   shareableName: {type: String, required: true},
 
   created: {type: Date, default: (new Date()).toISOString()}
