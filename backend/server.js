@@ -72,14 +72,21 @@ app.get("/api/calendar/:calId", async (req, res) => {
   // query mongo for that calendar + all events with that calid
   // form a calendar json and res.send() it
   const { calId } = req.params;
+  let data = {};
   try {
     const calendar = await Calendar.findOne({ shareableName: calId });
-    if (calendar) {
-      res.send(calendar);
-    } else {
+    data["name"] = calendar.friendlyName;
+    data["shareableName"] = calendar.shareableName;
+
+    const events = await Event.find({calendarId: calId}).lean();
+    data["events"] = events;
+
+    if (!calendar) {
       res.status(404).send({ message: 'Calendar not found' });
-    }
+    } else res.send(data);
+
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: 'Server error' });
   }
 });
