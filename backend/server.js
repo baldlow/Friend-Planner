@@ -40,31 +40,35 @@ app.post("/api/upload", async (req, res) => {
 
   let name = encodeURIComponent(req.body["name"].replace(/\s/g, '')); // remove whitespace from the friendlyname for sharing
 
-
-  const c = new Calendar({
-    friendlyName: req.body["name"], // friendly name for display
-    // create a unique name (e.g. [simplified name]-[first 6 of the date iso string]) this should be unique enough but short enough to be typable
-    shareableName: `${name}-${crypto.createHash('md5').update((new Date()).toISOString()).digest('hex').slice(0, 6)}`
-  })
-  await c.save();
-
-  calId = c.shareableName;
-  cache[calId] = {};
-
-  req.body["events"].forEach(async element => {
-    const e = new Event({
-      summary: element["summary"],
-      calendarId: calId,
-      startTime: new Date(element.startTime),
-      endTime: new Date(element.endTime)
+  try {
+    const c = new Calendar({
+      friendlyName: req.body["name"], // friendly name for display
+      // create a unique name (e.g. [simplified name]-[first 6 of the date iso string]) this should be unique enough but short enough to be typable
+      shareableName: `${name}-${crypto.createHash('md5').update((new Date()).toISOString()).digest('hex').slice(0, 6)}`
     })
+    await c.save();
 
-    cache[calId] = e;
+    calId = c.shareableName;
+    cache[calId] = {};
 
-    await e.save();
-  });
+    req.body["events"].forEach(async element => {
+      const e = new Event({
+        summary: element["summary"],
+        calendarId: calId,
+        startTime: new Date(element.startTime),
+        endTime: new Date(element.endTime)
+      })
 
-  res.send({ "created": calId });
+      cache[calId] = e;
+
+      await e.save();
+    });
+
+    res.send({ "created": calId });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: 'Server error' });
+  }
 })
 
 app.get("/api/calendar/:calId", async (req, res) => {
@@ -78,7 +82,7 @@ app.get("/api/calendar/:calId", async (req, res) => {
     data["name"] = calendar.friendlyName;
     data["shareableName"] = calendar.shareableName;
 
-    const events = await Event.find({calendarId: calId}).lean();
+    const events = await Event.find({ calendarId: calId }).lean();
     data["events"] = events;
 
     if (!calendar) {
