@@ -13,6 +13,7 @@ mongoose.connect(credentials.uri, {
   dbName: 'calendars',
 })
 
+ database
 // define mongodb schemas:
 const Event = require("./schemas/events");
 const Calendar = require("./schemas/calendar");
@@ -51,6 +52,14 @@ app.post("/api/upload", async (req, res) => {
 
     calId = c.shareableName;
     cache[calId] = {};
+=======
+// Route to add a user's schedule
+app.post('/api/schedule', (req, res) => {
+  const { id, availability } = req.body;
+  schedules.push({ id, availability });
+  res.status(201).send({ message: 'Schedule added successfully!' });
+});
+
 
     req.body["events"].forEach(async element => {
       const e = new Event({
