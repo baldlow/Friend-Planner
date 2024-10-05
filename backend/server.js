@@ -1,6 +1,9 @@
 const express = require('express');
 const crypto = require('crypto'); // used to hash
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+
 const credentials = require("./connect_str.json") // maybe make this an env var at one point
 
 const app = express();
@@ -16,10 +19,13 @@ mongoose.connect(credentials.uri, {
 // define mongodb schemas:
 const Event = require("./schemas/events");
 const Calendar = require("./schemas/calendar");
+const scrapeData = require("./schemas/scrapeData");
+const localEvent = require("./schemas/localEvents");
 
+
+// we aren't using this right now (implement this maybe)
 // this cache wont clear stuff on its own (so itll slowly fill up till memory overflow) 
 let cache = {
-  String
   // shareablename: obj
 }
 
@@ -30,7 +36,7 @@ app.post("/api/upload", async (req, res) => {
       "name": "friendly name"
       "events": [{
         "summary": "Busy",
-        "startTime": 2024-10-05T16:42:55.679Z, (ISO timestamp)
+        "startTime":  , (ISO timestamp)
         "endTime": 2024-10-05T16:42:55.680Z  
       }.. so on]
     }
@@ -83,7 +89,7 @@ app.post("/api/upload", async (req, res) => {
 })
 
 app.get("/api/calendar/:calId", async (req, res) => {
-  // req.params will have calId
+  // req.param s will have calId
   // query mongo for that calendar + all events with that calid
   // form a calendar json and res.send() it
   const { calId } = req.params;
@@ -106,9 +112,57 @@ app.get("/api/calendar/:calId", async (req, res) => {
   }
 });
 
+
 app.get("/api/events", async (req, res) => {
-  // TODO: create a scrape function that we can run once a day or something to populate a collection in mongo with events.
-})
+  try {
+    fs.readdir("./util/", async (err, files) => {
+      if (err) {
+        res.send({ message: "Something went wrong." });
+        console.log(err);
+        return;
+      }
+
+      let allEvents = [];
+      
+      const scrapePromises = files.map(async (file) => {
+        const provider = require(path.join(__dirname, "./util/", file));
+        const providerName = file.replace(/\.[^/.]+$/, "").toUpperCase();
+        
+        let scrapeInfo = await scrapeData.findOne({provider: providerName})
+        if (!scrapeInfo) {
+          scrapeInfo = new scrapeData({
+            provider: providerName,
+          })
+          if (!(Math.abs(new Date(scrapeInfo.updated) - new Date(Date.now()))/1000 <= 86400)) provider.scrape();  
+        }
+
+        await scrapeInfo.save();
+
+        const events = localEvent.find({startTime: {$gte: Date.now()}});
+        return events;
+      });
+
+      const results = await Promise.all(scrapePromises);
+
+      allEvents = results.flat();
+
+      allEvents.forEach(event => {
+        let dbEvent = localEvent.findOne({unique: event.unique});
+        if (!dbEvent.unique) (new localEvent(event)).save();
+
+        // console.log(localEvent.findOne({unique: event.unique}));
+
+      })
+
+      
+
+      res.send(allEvents);
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({ message: "Error processing events" });
+  }
+});
 
 // Start the server
 app.listen(PORT, () => {

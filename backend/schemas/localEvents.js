@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
 
-const eventSchema = new mongoose.Schema({
+const localEventSchema = new mongoose.Schema({
     summary: {type: String, required: true},
+    url: {type: String},
     description: {type: String},
-    provider: {type: String},
+    provider: {type: String, required: true},
 
     // GEOJSON, coordinate
     location: {
         type: {
-            type: String, // Don't do `{ location: { type: String } }`
-            enum: ['Point'], // 'location.type' must be 'Point'
+            type: String,
+            enum: ['Point'],
             required: true
           },
           coordinates: {
@@ -18,7 +19,7 @@ const eventSchema = new mongoose.Schema({
           }
     },
 
-    unique: {type: String, required: true},
+    unique: {type: String, required: true, unique: true},
 
     startTime: {type: Date, required: true},
     endTime: {type: Date, required: true}, 
@@ -27,5 +28,5 @@ const eventSchema = new mongoose.Schema({
     updated: {type: Date, default: (new Date()).toISOString()}
   });
 
-  const Event = mongoose.model('LocalEvent', eventSchema,  'local_events');
-  module.exports = Event;
+  const localEvent = mongoose.model('LocalEvent', localEventSchema,  'local_events');
+  module.exports = localEvent;
