@@ -8,8 +8,8 @@ let schedules = []; // In-memory array to hold schedules
 
 // Route to add a user's schedule
 app.post('/api/schedule', (req, res) => {
-  const { user, availability } = req.body;
-  schedules.push({ user, availability });
+  const { id, availability } = req.body;
+  schedules.push({ id, availability });
   res.status(201).send({ message: 'Schedule added successfully!' });
 });
 
