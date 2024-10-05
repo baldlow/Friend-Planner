@@ -2,14 +2,15 @@ const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
     summary: {type: String, required: true},
+    url: {type: String},
     description: {type: String},
     provider: {type: String},
 
     // GEOJSON, coordinate
     location: {
         type: {
-            type: String, // Don't do `{ location: { type: String } }`
-            enum: ['Point'], // 'location.type' must be 'Point'
+            type: String,
+            enum: ['Point'],
             required: true
           },
           coordinates: {
