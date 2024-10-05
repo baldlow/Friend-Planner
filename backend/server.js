@@ -18,7 +18,7 @@ const Event = require("./schemas/events");
 const Calendar = require("./schemas/calendar");
 
 // this cache wont clear stuff on its own (so itll slowly fill up till memory overflow) 
-let cache = {
+let cache = {String
   // shareablename: obj
 }
 
