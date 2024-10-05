@@ -1,7 +1,8 @@
 const express = require('express');
-const crypto = require('crypto');
+const crypto = require('crypto'); // used to hash
 const mongoose = require('mongoose');
-const credentials = require("./connect_str.json")
+const credentials = require("./connect_str.json") // maybe make this an env var at one point
+
 const app = express();
 const PORT = 3000;
 
@@ -86,7 +87,7 @@ app.get("/api/calendar/:calId", async (req, res) => {
     data["events"] = events;
 
     if (!calendar) {
-      res.status(404).send({ message: 'Calendar not found' });
+      res.status(404).send({ message: 'Calendar not found' }); 
     } else res.send(data);
 
   } catch (error) {
