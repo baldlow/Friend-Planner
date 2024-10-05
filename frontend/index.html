@@ -1,20 +1,28 @@
-<div id="parent">
-    <link rel='stylesheet' href='css/main.css'>
-    <div class="child" id="calendar">
-      <div id="calendar-header">
-        <h1 id="month"></h1>
-      </div>
-      <div id="days"></div>
-      <div id="calendar-body"></div>
+<div class="parent">
+  <link rel='stylesheet' href='css/main.css'>
+  <div class="child" id="calendar">
+    <div id="calendar-header">
+      <h1 id="month"></h1>
     </div>
-    <div class="child" id="left">
-      <div id="toggle"></div>
-      <input class="inp" id="codeinput">
-      <button class="inp" id="enter">Enter Code</button>
-      <div class="cr">
-        <button id="create">Create Code</button>
-        <h4 id="code"></h4>
-      </div>
-    </div>
-    <script src='scripts/front.js'></script>
+    <div id="days"></div>
+    <div id="calendar-body"></div>
   </div>
+  <div class="child" id="left">
+    <div id="toggle">
+<!--         <div class="calTog" id="temp">
+        <button class="calDel">X</button>
+        <button class="calTogg">Name</button>
+      </div> -->
+    </div>
+    <div id="inputs">
+    <input class="inp" id="codeinput" placeholder="Enter Code">
+    <button class="inp" id="enter">Load Calendar</button>
+    <div class="cr">
+      <input id="calInput" placeholder="Enter Calendar Name">
+      <button id="create">Create Code</button>
+      <h4 id="code"></h4>
+    </div>
+    </div>
+  </div>
+  <script src='scripts/front.js'></script>
+</div>
