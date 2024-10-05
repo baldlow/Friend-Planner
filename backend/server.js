@@ -30,8 +30,8 @@ app.post("/api/upload", async (req, res) => {
       "name": "friendly name"
       "events": [{
         "summary": "Busy",
-        "startTime": 1728185765, (unix timestamp)
-        "endTime": 1728192965  
+        "startTime": 2024-10-05T16:42:55.679Z, (ISO timestamp)
+        "endTime": 2024-10-05T16:42:55.680Z  
       }.. so on]
     }
   */
@@ -49,6 +49,8 @@ app.post("/api/upload", async (req, res) => {
       shareableName: `${name}-${crypto.createHash('md5').update((new Date()).toISOString()).digest('hex').slice(0, 6)}`
     })
     await c.save();
+
+    console.log(`${name}-${crypto.createHash('md5').update((new Date()).toISOString()).digest('hex').slice(0, 6)}`)
 
     calId = c.shareableName;
     cache[calId] = {};
