@@ -38,7 +38,7 @@ app.post("/api/upload", async (req, res) => {
 
   let calId = "";
 
-  let name = req.body["name"].replace(/\s/g, ''); // remove whitespace from the friendlyname for sharing
+  let name = encodeURIComponent(req.body["name"].replace(/\s/g, '')); // remove whitespace from the friendlyname for sharing
 
 
   const c = new Calendar({
