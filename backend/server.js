@@ -44,7 +44,7 @@ app.post("/api/upload", async (req, res) => {
   const c = new Calendar({
     friendlyName: req.body["name"], // friendly name for display
     // create a unique name (e.g. [simplified name]-[first 6 of md5 hash of user agent]) this should be unique enough but short enough to be typable
-    shareableName: `${name}-${crypto.createHash('md5').update(req.header('user-agent')).digest('hex').slice(0,6)}`
+    shareableName: `${name}-${crypto.createHash('md5').update(req.header('user-agent')).digest('hex').slice(0, 6)}`
     // TODO: change user agent to something more unique later... probably
   })
   await c.save();
@@ -65,14 +65,25 @@ app.post("/api/upload", async (req, res) => {
     await e.save();
   });
 
-  res.send({"created": calId});
+  res.send({ "created": calId });
 })
 
 app.get("/api/calendar/:calId", async (req, res) => {
   // req.params will have calId
   // query mongo for that calendar + all events with that calid
   // form a calendar json and res.send() it
-})
+  const { calId } = req.params;
+  try {
+    const calendar = await Calendar.findOne({ shareableName: calId });
+    if (calendar) {
+      res.send(calendar);
+    } else {
+      res.status(404).send({ message: 'Calendar not found' });
+    }
+  } catch (error) {
+    res.status(500).send({ message: 'Server error' });
+  }
+});
 
 app.get("/api/events", async (req, res) => {
   // TODO: create a scrape function that we can run once a day or something to populate a collection in mongo with events.
