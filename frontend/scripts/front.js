@@ -161,6 +161,7 @@ const calCodeOut = document.getElementById('code');
 createCal.addEventListener('click', function(event) {
   data['name']=calName.value;
   data['month']= `${months[date.getMonth()]} ${date.getFullYear()}`;
-  
+  fetch('/api/calendar/${calCodeIn.value}')
+  .then((response) => response.json())
+  .then((json) => console.log(json));
 });
-
