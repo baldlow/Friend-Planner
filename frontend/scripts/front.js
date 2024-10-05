@@ -24,15 +24,51 @@ const data={
   "next-month":[]
 };
 
+const pack={
+  "name":"",
+  "events":[]
+};
+
 const cals={
   data,
-}
+};
 
 function findInDict(dict, key, val){
   for(var i=0;i<dict[key].length;i++){
     if(dict[key][i]==val){
       return i;
     }
+  }
+}
+
+function pck(){
+  const eventTemp={
+    "summary":"Day Unavailable",
+    "startTime":"",
+    "endTime":""
+  };
+  const name = document.getElementById('calInput').value;
+  pack["name"]=name;
+  for(var i=0;i<data["prev-month"].length;i++){
+    const start = new Date(date.getFullYear(),date.getMonth()-1,data["prev-month"][i],0);
+    const end = new Date(date.getFullYear(),date.getMonth()-1,data["prev-month"][i],23,59);
+    eventTemp["startTime"]=start.toISOString();
+    eventTemp["endTime"]=end.toISOString();
+    pack["events"].push(eventTemp);
+  }
+  for(var i=0;i<data["curr-month"].length;i++){
+    const start = new Date(date.getFullYear(),date.getMonth(),data["curr-month"][i],0);
+    const end = new Date(date.getFullYear(),date.getMonth(),data["curr-month"][i],23,59);
+    eventTemp["startTime"]=start.toISOString();
+    eventTemp["endTime"]=end.toISOString();
+    pack["events"].push(eventTemp);
+  }
+  for(var i=0;i<data["next-month"].length;i++){
+    const start = new Date(date.getFullYear(),date.getMonth()+1,data["next-month"][i],0);
+    const end = new Date(date.getFullYear(),date.getMonth()+1,data["next-month"][i],23,59);
+    eventTemp["startTime"]=start.toISOString();
+    eventTemp["endTime"]=end.toISOString();
+    pack["events"].push(eventTemp);
   }
 }
 
@@ -153,15 +189,16 @@ dtes.forEach(date => {
 });
 
 const createCal = document.getElementById('create');
-const calName = document.getElementById('calInput');
 const loadCal = document.getElementById('enter');
 const calCodeIn = document.getElementById('codeinput');
 const calCodeOut = document.getElementById('code');
 
 createCal.addEventListener('click', function(event) {
-  data['name']=calName.value;
-  data['month']= `${months[date.getMonth()]} ${date.getFullYear()}`;
-  fetch('/api/calendar/${calCodeIn.value}')
-  .then((response) => response.json())
-  .then((json) => console.log(json));
+  // data['name']=calName.value;
+  // data['month']= `${months[date.getMonth()]} ${date.getFullYear()}`;
+  // fetch('/api/calendar/${calCodeIn.value}')
+  // .then((response) => response.json())
+  // .then((json) => console.log(json));
+  pck()
+  console.log(JSON.stringify(pack));
 });
