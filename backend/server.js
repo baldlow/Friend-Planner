@@ -43,9 +43,8 @@ app.post("/api/upload", async (req, res) => {
 
   const c = new Calendar({
     friendlyName: req.body["name"], // friendly name for display
-    // create a unique name (e.g. [simplified name]-[first 6 of md5 hash of user agent]) this should be unique enough but short enough to be typable
-    shareableName: `${name}-${crypto.createHash('md5').update(req.header('user-agent')).digest('hex').slice(0, 6)}`
-    // TODO: change user agent to something more unique later... probably
+    // create a unique name (e.g. [simplified name]-[first 6 of the date iso string]) this should be unique enough but short enough to be typable
+    shareableName: `${name}-${crypto.createHash('md5').update((new Date()).toISOString()).digest('hex').slice(0, 6)}`
   })
   await c.save();
 
