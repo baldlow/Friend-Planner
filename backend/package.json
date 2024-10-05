@@ -1,7 +1,7 @@
 {
   "name": "friend-planner",
   "version": "1.0.0",
-  "description": "This is the start of the friend Planner Here’s a simple yet structured `README.md` file for your \"Friend Planner\" project that you can use to guide your team. This README explains the project, the structure, and how the team can contribute effectively:",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.0"
+    "express": "^4.21.0",
+    "mongodb": "^6.9.0",
+    "mongoose": "^8.7.0"
   }
 }
