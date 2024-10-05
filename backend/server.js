@@ -29,6 +29,9 @@ let cache = {
   // shareablename: obj
 }
 
+app.use(express.static(path.join(__dirname, 'public')))
+
+
 app.post("/api/upload", async (req, res) => {
   // sample structure of a post json:
   /*
