@@ -1,5 +1,7 @@
 body {
   font-family: Arial, sans-serif;
+  margin:0;
+  padding:0;
 }
 .child {
 display: inline-block;
@@ -15,14 +17,21 @@ position: relative;
 display: inline-block;
 }
 
+.base {
+  height:100vh;
+  width:100%;
+  background-color:#FFBFF9;
+  overflow:hidden;
+  position: relative;
+}
+
 .parent {
-padding: 2em 2em;
-background-color:#FFBFF9;
+  padding: 2em 2em;
 }
 
 #toggle {
 max-height: 30em;
-bottom:15em;
+margin-bottom:15em;
 position:relative;
 grid-template-columns: 1fr 1fr 1fr;
 grid-auto-rows: 1fr;
@@ -69,7 +78,7 @@ background-color: #E0E1E1;
 }
 
 .inp {
-bottom: .5em;
+margin-bottom: .5em;
 position: relative;
 }
 

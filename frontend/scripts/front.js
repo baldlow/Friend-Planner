@@ -24,12 +24,45 @@ const data={
   "next-month":[]
 };
 
+const cals={
+  data,
+}
+
 function findInDict(dict, key, val){
   for(var i=0;i<dict[key].length;i++){
     if(dict[key][i]==val){
       return i;
     }
   }
+}
+
+function update(){
+  const dys = document.querySelectorAll('.date');
+  dys.forEach(dy=>{
+    switch(dy.id){    
+    case "prev-date":
+      if (findInDict(data,"prev-month",dy.innerHTML) != undefined){
+      dy.style.backgroundColor='red';
+    }else{
+      dy.style.backgroundColor = '#E0E1E1';
+    }
+      break;
+    case "next-date":
+      if (findInDict(data,"next-month",dy.innerHTML) != undefined){
+      dy.style.backgroundColor='red';
+    }else{
+      dy.style.backgroundColor = '#E0E1E1';
+    }
+      break;
+    default:
+      if (findInDict(data,"curr-month",dy.innerHTML) !=undefined){
+      dy.style.backgroundColor='red';
+    }else{
+      dy.style.backgroundColor = '#E0E1E1';
+    }
+      break;
+  }
+  })
 }
 
 function renderCalendar() {
@@ -98,7 +131,6 @@ dtes.forEach(date => {
             date.addEventListener('click', function(event) {
                 console.log('Box clicked:', event.target);
               if (date.style.backgroundColor=='red'){
-                date.style.backgroundColor = '#E0E1E1';
                 if(date.id=="prev-date"){
                   data["prev-month"].splice(findInDict(data,"prev-month",date.innerHTML),1)
                 }else if(date.id=="next-date"){
@@ -107,7 +139,6 @@ dtes.forEach(date => {
                   data["curr-month"].splice(findInDict(data,"curr-month",date.innerHTML),1)
                 }
               }else{
-                date.style.backgroundColor = 'red';
                 if(date.id=="prev-date"){
                   data["prev-month"].push(date.innerHTML);
                 }else if(date.id=="next-date"){
@@ -116,6 +147,20 @@ dtes.forEach(date => {
                   data["curr-month"].push(date.innerHTML);
                 }
               }
+              update();
               console.log(JSON.stringify(data));
  });
 });
+
+const createCal = document.getElementById('create');
+const calName = document.getElementById('calInput');
+const loadCal = document.getElementById('enter');
+const calCodeIn = document.getElementById('codeinput');
+const calCodeOut = document.getElementById('code');
+
+createCal.addEventListener('click', function(event) {
+  data['name']=calName.value;
+  data['month']= `${months[date.getMonth()]} ${date.getFullYear()}`;
+  
+});
+
