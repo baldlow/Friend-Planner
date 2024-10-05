@@ -13,13 +13,13 @@ mongoose.connect(credentials.uri, {
   dbName: 'calendars',
 })
 
- database
 // define mongodb schemas:
 const Event = require("./schemas/events");
 const Calendar = require("./schemas/calendar");
 
 // this cache wont clear stuff on its own (so itll slowly fill up till memory overflow) 
-let cache = {String
+let cache = {
+  String
   // shareablename: obj
 }
 
@@ -52,13 +52,12 @@ app.post("/api/upload", async (req, res) => {
 
     calId = c.shareableName;
     cache[calId] = {};
-=======
-// Route to add a user's schedule
-app.post('/api/schedule', (req, res) => {
-  const { id, availability } = req.body;
-  schedules.push({ id, availability });
-  res.status(201).send({ message: 'Schedule added successfully!' });
-});
+    // Route to add a user's schedule
+    app.post('/api/schedule', (req, res) => {
+      const { id, availability } = req.body;
+      schedules.push({ id, availability });
+      res.status(201).send({ message: 'Schedule added successfully!' });
+    });
 
 
     req.body["events"].forEach(async element => {
@@ -96,7 +95,7 @@ app.get("/api/calendar/:calId", async (req, res) => {
     data["events"] = events;
 
     if (!calendar) {
-      res.status(404).send({ message: 'Calendar not found' }); 
+      res.status(404).send({ message: 'Calendar not found' });
     } else res.send(data);
 
   } catch (error) {
