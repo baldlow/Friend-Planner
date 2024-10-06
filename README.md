@@ -1,5 +1,5 @@
 ### Feature Breakdown
-Here’s a breakdown of some features and who can take the lead on each:
+Here’s a breakdown of some features
 
 1. **Frontend**:
    - **HTML Structure**: Create the landing page, input forms, and display components.
