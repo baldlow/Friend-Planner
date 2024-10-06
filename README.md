@@ -1,3 +1,9 @@
+## Friend Planner
+
+### Project Overview
+**Friend Planner** is a tool designed to help groups find common availability by allowing users to input their schedules and see overlapping free times. It's intended to simplify scheduling group events by visually showing when everyone is free.
+
+
 ### Feature Breakdown
 Here’s a breakdown of some features
 
