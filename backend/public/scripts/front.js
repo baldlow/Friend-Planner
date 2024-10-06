@@ -1,5 +1,5 @@
-const upload_url = "https://borboss-app--3000.prod1a.defang.dev/api/upload"
-const domain = "https://borboss-app--3000.prod1a.defang.dev"
+const upload_url = `${window.location.origin}/api/upload`
+const domain = `${window.location.origin}`
 
 let date = new Date();
 

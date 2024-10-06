@@ -1,5 +1,6 @@
 services:
   app:
+    domainname: www.schedule2.study
     restart: unless-stopped
     build:
       context: ./backend
