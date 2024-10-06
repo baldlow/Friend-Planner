@@ -1,104 +1,258 @@
 let date = new Date();
-
+var colors = ['#4DD384', '#4DCCD3', '#EBBF58', '#EB5858', '#EBDC58', '#6BEB58', '#5865EB', '#D758EB', '#EB589D', '#AC58EB'];
 const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ];
-
-const data={
-  "name":"",
-  "month":"",
-  "token":"",
-  "prev-month":[],
-  "curr-month":[],
-  "next-month":[]
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+];
+let enabled = [];
+let data = {
+    "name": "",
+    "month": "",
+    "token": "",
+    "prev-month": [],
+    "curr-month": [],
+    "next-month": []
 };
 
-const pack={
-  "name":"",
-  "events":[]
+let pack = {
+    "name": "",
+    "events": []
 };
 
-const cals={
-  data,
+let cals = {};
+
+let unav = {
+    "prev-month": [],
+    "curr-month": [],
+    "next-month": []
 };
 
-function findInDict(dict, key, val){
-  for(var i=0;i<dict[key].length;i++){
-    if(dict[key][i]==val){
-      return i;
+function findInDict(dict, key, val) {
+    for (var i = 0; i < dict[key].length; i++) {
+        if (dict[key][i] == val) {
+            return i;
+        }
     }
-  }
 }
 
-function pck(){
-  const eventTemp={
-    "summary":"Day Unavailable",
-    "startTime":"",
-    "endTime":""
-  };
-  const name = document.getElementById('calInput').value;
-  pack["name"]=name;
-  for(var i=0;i<data["prev-month"].length;i++){
-    const start = new Date(date.getFullYear(),date.getMonth()-1,data["prev-month"][i],0);
-    const end = new Date(date.getFullYear(),date.getMonth()-1,data["prev-month"][i],23,59);
-    eventTemp["startTime"]=start.toISOString();
-    eventTemp["endTime"]=end.toISOString();
-    pack["events"].push(eventTemp);
-  }
-  for(var i=0;i<data["curr-month"].length;i++){
-    const start = new Date(date.getFullYear(),date.getMonth(),data["curr-month"][i],0);
-    const end = new Date(date.getFullYear(),date.getMonth(),data["curr-month"][i],23,59);
-    eventTemp["startTime"]=start.toISOString();
-    eventTemp["endTime"]=end.toISOString();
-    pack["events"].push(eventTemp);
-  }
-  for(var i=0;i<data["next-month"].length;i++){
-    const start = new Date(date.getFullYear(),date.getMonth()+1,data["next-month"][i],0);
-    const end = new Date(date.getFullYear(),date.getMonth()+1,data["next-month"][i],23,59);
-    eventTemp["startTime"]=start.toISOString();
-    eventTemp["endTime"]=end.toISOString();
-    pack["events"].push(eventTemp);
-  }
+function clear(a) {
+    const k = Object.keys(a);
+    for (var i = 0; i < k.length; i++) {
+        if (Array.isArray(a[k[i]])) {
+            //console.log(str(a[k[i]]));
+            a[k[i]] = [];
+        } else {
+            a[k[i]] = "";
+        }
+    }
 }
 
-function update(){
-  const dys = document.querySelectorAll('.date');
-  dys.forEach(dy=>{
-    switch(dy.id){    
-    case "prev-date":
-      if (findInDict(data,"prev-month",dy.innerHTML) != undefined){
-      dy.style.backgroundColor='red';
-    }else{
-      dy.style.backgroundColor = '#E0E1E1';
+function str(a) {
+    return JSON.stringify(a);
+}
+
+function pck(del) {
+  pack = {
+    "name": "",
+    "events": []
+};
+    const name = document.getElementById('calInput').value;
+    pack["name"] = name;
+    //console.log(data);
+    for (var i = 0; i < data["prev-month"].length; i++) {
+        const start = new Date(date.getFullYear(), date.getMonth() - 1, data["prev-month"][i], 0);
+        const end = new Date(date.getFullYear(), date.getMonth() - 1, data["prev-month"][i], 23, 59);
+        const eventTemp = { // Create a new event object
+            "summary": "Day Unavailable",
+            "startTime": start.toISOString(),
+            "endTime": end.toISOString()
+        };
+        pack["events"].push(eventTemp);
     }
-      break;
-    case "next-date":
-      if (findInDict(data,"next-month",dy.innerHTML) != undefined){
-      dy.style.backgroundColor='red';
-    }else{
-      dy.style.backgroundColor = '#E0E1E1';
+    for (var i = 0; i < data["curr-month"].length; i++) {
+        const start = new Date(date.getFullYear(), date.getMonth(), data["curr-month"][i], 0);
+        const end = new Date(date.getFullYear(), date.getMonth(), data["curr-month"][i], 23, 59);
+        const eventTemp = { // Create a new event object
+            "summary": "Day Unavailable",
+            "startTime": start.toISOString(),
+            "endTime": end.toISOString()
+        };
+        pack["events"].push(eventTemp);
     }
-      break;
-    default:
-      if (findInDict(data,"curr-month",dy.innerHTML) !=undefined){
-      dy.style.backgroundColor='red';
-    }else{
-      dy.style.backgroundColor = '#E0E1E1';
+    for (var i = 0; i < data["next-month"].length; i++) {
+        const start = new Date(date.getFullYear(), date.getMonth() + 1, data["next-month"][i], 0);
+        const end = new Date(date.getFullYear(), date.getMonth() + 1, data["next-month"][i], 23, 59);
+        const eventTemp = { // Create a new event object
+            "summary": "Day Unavailable",
+            "startTime": start.toISOString(),
+            "endTime": end.toISOString()
+        };
+        pack["events"].push(eventTemp);
     }
-      break;
-  }
-  })
+
+    console.log(name);
+    cals[name] = pack;
+
+    if (del) {
+        clear(data);
+    }
+}
+
+function parseISOString(s) {
+    var b = s.split(/\D+/);
+    return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
+}
+
+function tblFind(tbl1, val) {
+    for (var i = 0; i < tbl1.length; i++) {
+        if (tbl1[i] == val) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function tblLocate(tbl1, val) {
+    for (var i = 0; i < tbl1.length; i++) {
+        if (tbl1[i] == val) {
+            return i;
+        }
+    }
+    return false;
+}
+
+function compareCals() {
+    unav["prev-month"] = [];
+    unav["curr-month"] = [];
+    unav["next-month"] = [];
+    const k = Object.keys(cals);
+    console.log(cals);
+    console.log(k.length);
+    if (k.length > 1) {
+        for (var i = 0; i < k.length-1; i++) {
+          console.log(cals[k[i]]);
+          console.log(cals[k[i]]["name"]);
+          console.log(tblFind(enabled,cals[k[i]]["name"]));
+            if (cals[k[i]] == undefined || tblFind(enabled, cals[k[i]]["name"]) == false) {
+                console.log(k[i]);
+                continue;
+            }
+            for (var f = 0; f < cals[k[i]]["events"].length; f++) {
+                let dt = parseISOString(cals[k[i]]["events"][f]["startTime"]);
+                if (dt.getMonth() < date.getMonth()) {
+                    if (findInDict(unav, "prev-month", dt.getDate()) == undefined) {
+                        unav["prev-month"].push(dt.getDate());
+                    }
+                } else if (dt.getMonth() > date.getMonth()) {
+                    if (findInDict(unav, "next-month", dt.getDate()) == undefined) {
+                        unav["next-month"].push(dt.getDate());
+                    }
+                } else {
+                    if (findInDict(unav, "curr-month", dt.getDate()) == undefined) {
+                        unav["curr-month"].push(dt.getDate());
+                    }
+                }
+            }
+        }
+    } else {
+        if (cals[k[0]] == undefined || tblFind(enabled, cals[k[0]]["name"]) == false) {
+            return;
+        }
+        for (var f = 0; f < cals[k[0]]["events"].length; f++) {
+            let dt = parseISOString(cals[k[0]]["events"][f]["startTime"]);
+            if (dt.getMonth() < date.getMonth()) {
+                if (findInDict(unav, "prev-month", dt.getDate()) == undefined) {
+                    unav["prev-month"].push(dt.getDate());
+                }
+            } else if (dt.getMonth() > date.getMonth()) {
+                if (findInDict(unav, "next-month", dt.getDate()) == undefined) {
+                    unav["next-month"].push(dt.getDate());
+                }
+            } else {
+                if (findInDict(unav, "curr-month", dt.getDate()) == undefined) {
+                    unav["curr-month"].push(dt.getDate());
+                }
+            }
+        }
+    }
+}
+
+function update() {
+    const dys = document.querySelectorAll('.date');
+    dys.forEach(dy => {
+        switch (dy.id) {
+            case "prev-date":
+                if (findInDict(unav, "prev-month", dy.innerHTML) != undefined || findInDict(data, "prev-month", dy.innerHTML) != undefined) {
+                    dy.style.backgroundColor = 'red';
+                } else {
+                    dy.style.backgroundColor = '#E0E1E1';
+                }
+                break;
+            case "next-date":
+                if (findInDict(unav, "next-month", dy.innerHTML) != undefined || findInDict(data, "next-month", dy.innerHTML) != undefined) {
+                    dy.style.backgroundColor = 'red';
+                } else {
+                    dy.style.backgroundColor = '#E0E1E1';
+                }
+                break;
+            default:
+                if (findInDict(unav, "curr-month", dy.innerHTML) != undefined || findInDict(data, "curr-month", dy.innerHTML) != undefined) {
+                    dy.style.backgroundColor = 'red';
+                } else {
+                    dy.style.backgroundColor = '#E0E1E1';
+                }
+                break;
+        }
+    })
+}
+
+function newCal(cal) {
+    const toggle = document.getElementById('toggle');
+    let elem = toggle.innerHTML;
+    let div = document.createElement("div");
+    div.className = "calTog";
+    div.id = cal["name"];
+    div.style.backgroundColor = colors[Object.keys(cals).length - 1];
+    let b1 = document.createElement("button");
+    b1.className = "calDel";
+    b1.innerHTML = "X";
+    b1.onclick = function() {
+        delete cals[this.parentElement.id];
+        compareCals();
+        update();
+        this.parentElement.remove();
+        enabled.splice(tblLocate(enabled, cal["name"]), 1);
+        clear(data);
+    };
+    let b2 = document.createElement("button");
+    b2.className = "calTogg";
+    b2.innerHTML = cal["name"];
+    b2.onclick = function() {
+        if (tblFind(enabled, this.innerHTML)) {
+            enabled.splice(tblLocate(enabled, this.innerHTML), 1);
+        } else {
+            enabled.push(this.innerHTML);
+        }
+        compareCals();
+        update();
+    };
+    toggle.appendChild(div);
+    div.appendChild(b1);
+    div.appendChild(b2);
+    enabled.push(cal["name"]);
+    //console.log(cal["name"]);
+    //cals[k[i]]["name"]console.log(cals);
+    cals[cal["name"]] = cal;
 }
 
 function renderCalendar() {
@@ -150,7 +304,7 @@ function renderCalendar() {
     }
 
     for (let i = 1; i <= lastDay; i++) {
-       dates += `<button class='date'>${i}</button>`;
+        dates += `<button class='date'>${i}</button>`;
     }
 
     for (let j = 1; j <= nextDays; j++) {
@@ -164,28 +318,27 @@ renderCalendar();
 const dtes = document.querySelectorAll('.date');
 
 dtes.forEach(date => {
-            date.addEventListener('click', function(event) {
-                console.log('Box clicked:', event.target);
-              if (date.style.backgroundColor=='red'){
-                if(date.id=="prev-date"){
-                  data["prev-month"].splice(findInDict(data,"prev-month",date.innerHTML),1)
-                }else if(date.id=="next-date"){
-                  data["next-month"].splice(findInDict(data,"next-month",date.innerHTML),1)
-                }else{
-                  data["curr-month"].splice(findInDict(data,"curr-month",date.innerHTML),1)
-                }
-              }else{
-                if(date.id=="prev-date"){
-                  data["prev-month"].push(date.innerHTML);
-                }else if(date.id=="next-date"){
-                  data["next-month"].push(date.innerHTML);
-                }else{
-                  data["curr-month"].push(date.innerHTML);
-                }
-              }
-              update();
-              console.log(JSON.stringify(data));
- });
+    date.addEventListener('click', function(event) {
+        //console.log('Box clicked:', event.target);
+        if (date.style.backgroundColor == 'red') {
+            if (date.id == "prev-date") {
+                data["prev-month"].splice(findInDict(data, "prev-month", date.innerHTML), 1)
+            } else if (date.id == "next-date") {
+                data["next-month"].splice(findInDict(data, "next-month", date.innerHTML), 1)
+            } else {
+                data["curr-month"].splice(findInDict(data, "curr-month", date.innerHTML), 1)
+            }
+        } else {
+            if (date.id == "prev-date") {
+                data["prev-month"].push(date.innerHTML);
+            } else if (date.id == "next-date") {
+                data["next-month"].push(date.innerHTML);
+            } else {
+                data["curr-month"].push(date.innerHTML);
+            }
+        }
+        update();
+    });
 });
 
 const createCal = document.getElementById('create');
@@ -194,11 +347,25 @@ const calCodeIn = document.getElementById('codeinput');
 const calCodeOut = document.getElementById('code');
 
 createCal.addEventListener('click', function(event) {
-  // data['name']=calName.value;
-  // data['month']= `${months[date.getMonth()]} ${date.getFullYear()}`;
-  // fetch('/api/calendar/${calCodeIn.value}')
-  // .then((response) => response.json())
-  // .then((json) => console.log(json));
-  pck()
-  console.log(JSON.stringify(pack));
+    // data['name']=calName.value;
+    // data['month']= `${months[date.getMonth()]} ${date.getFullYear()}`;
+    // fetch('/api/calendar/${calCodeIn.value}')
+    // .then((response) => response.json())
+    // .then((json) => console.log(json));
+    const name = document.getElementById('calInput').value;
+    if (name == '' || document.getElementById(name)) {
+        return;
+    }
+    pck(true);
+    console.log(JSON.stringify(cals));
+    newCal(pack);
+    document.getElementById('calInput').value='';
+});
+
+loadCal.addEventListener('click', function(event) {
+    // data['name']=calName.value;
+    // data['month']= `${months[date.getMonth()]} ${date.getFullYear()}`;
+    // fetch('/api/calendar/${calCodeIn.value}')
+    // .then((response) => response.json())
+    // .then((json) => console.log(json));
 });

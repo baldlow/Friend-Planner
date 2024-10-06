@@ -61,6 +61,10 @@ pointer-events:auto;
 filter: brightness(0.8);
 }
 
+.calTog:has(.calTogg:active){
+  filter:brightness(0.8);
+}
+
 .calDel:hover {
 filter: brightness(0.7);
 }
