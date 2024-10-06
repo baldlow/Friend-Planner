@@ -1,3 +1,6 @@
+const upload_url = "https://borboss-app--3000.prod1a.defang.dev/api/upload"
+const domain = "https://borboss-app--3000.prod1a.defang.dev"
+
 let date = new Date();
 
 const months = [
@@ -276,7 +279,7 @@ const calCodeOut = document.getElementById('code');
 createCal.addEventListener('click', function(event) {
   pck(); // Prepare the calendar data
 
-  fetch('http://localhost:3000/api/upload', { // Update URL as needed
+  fetch(upload_url, { // Update URL as needed
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -291,55 +294,13 @@ createCal.addEventListener('click', function(event) {
     .catch(error => console.error('Error:', error));
 });
 
-/*loadCal.addEventListener('click', function(event) {
-  const code = calCodeIn.value;
-  if (!code) {
-    return alert('Please enter a calendar code');
-  }
-
-  fetch(`http://localhost:3000/api/calendar/${code}`) // Update with your API endpoint
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Calendar not found');
-      }
-      return response.json();
-    })
-    .then(calendar => {
-      // Clear current calendar data
-      data["prev-month"] = [];
-      data["curr-month"] = [];
-      data["next-month"] = [];
-
-      // Update with fetched data
-      calendar.events.forEach(event => {
-        const eventDate = new Date(event.startTime);
-        const eventMonth = eventDate.getMonth();
-        const currentMonth = date.getMonth();
-
-        if (eventMonth === currentMonth - 1) {
-          data["prev-month"].push(eventDate.getDate());
-        } else if (eventMonth === currentMonth) {
-          data["curr-month"].push(eventDate.getDate());
-        } else if (eventMonth === currentMonth + 1) {
-          data["next-month"].push(eventDate.getDate());
-        }
-      });
-
-      // Update the calendar UI
-      update();
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Failed to load calendar');
-    });
-});*/
 loadCal.addEventListener('click', function(event) {
   const code = calCodeIn.value;
   if (!code) {
     return alert('Please enter a calendar code');
   }
 
-  fetch(`http://localhost:3000/api/calendar/${code}`) // Update with your API endpoint
+  fetch(`${domain}/api/calendar/${code.trim()}`) // Update with your API endpoint
     .then(response => {
       if (!response.ok) {
         throw new Error('Calendar not found');
