@@ -1,3 +1,6 @@
+const upload_url = `${window.location.origin}/api/upload`
+const domain = `${window.location.origin}`
+
 let date = new Date();
 var colors = ['#4DD384', '#4DCCD3', '#EBBF58', '#EB5858', '#EBDC58', '#6BEB58', '#5865EB', '#D758EB', '#EB589D', '#AC58EB'];
 const months = [
@@ -139,7 +142,7 @@ function compareCals() {
     console.log(cals);
     console.log(k.length);
     if (k.length > 1) {
-        for (var i = 0; i < k.length-1; i++) {
+        for (var i = 0; i < k.length; i++) {
           console.log(cals[k[i]]);
           console.log(cals[k[i]]["name"]);
           console.log(tblFind(enabled,cals[k[i]]["name"]));
@@ -218,7 +221,6 @@ function update() {
 
 function newCal(cal) {
     const toggle = document.getElementById('toggle');
-    let elem = toggle.innerHTML;
     let div = document.createElement("div");
     div.className = "calTog";
     div.id = cal["name"];
@@ -347,25 +349,71 @@ const calCodeIn = document.getElementById('codeinput');
 const calCodeOut = document.getElementById('code');
 
 createCal.addEventListener('click', function(event) {
-    // data['name']=calName.value;
-    // data['month']= `${months[date.getMonth()]} ${date.getFullYear()}`;
-    // fetch('/api/calendar/${calCodeIn.value}')
-    // .then((response) => response.json())
-    // .then((json) => console.log(json));
-    const name = document.getElementById('calInput').value;
+  const name = document.getElementById('calInput').value;
     if (name == '' || document.getElementById(name)) {
         return;
     }
-    pck(true);
-    console.log(JSON.stringify(cals));
-    newCal(pack);
+  pck(true); // Prepare the calendar data
+
+  newCal(pack);
     document.getElementById('calInput').value='';
+
+  fetch(upload_url, { // Update URL as needed
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pack)
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log('Calendar created:', json);
+      calCodeOut.innerText = `Your calendar code is: ${json.created}`; // Display the generated code
+    })
+    .catch(error => console.error('Error:', error));
 });
 
 loadCal.addEventListener('click', function(event) {
-    // data['name']=calName.value;
-    // data['month']= `${months[date.getMonth()]} ${date.getFullYear()}`;
-    // fetch('/api/calendar/${calCodeIn.value}')
-    // .then((response) => response.json())
-    // .then((json) => console.log(json));
+  const code = calCodeIn.value;
+  if (!code) {
+    return alert('Please enter a calendar code');
+  }
+
+  fetch(`${domain}/api/calendar/${code.trim()}`) // Update with your API endpoint
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Calendar not found');
+      }
+      return response.json();
+    })
+    .then(calendar => {
+      // Clear current calendar data
+      let tempd = {
+        "name":"",
+        "events":[]
+      };
+
+      
+
+      tempd["name"]=calendar.name;
+
+      // Update with fetched data
+      calendar.events.forEach(event => {
+        const eventTmp = { // Create a new event object
+          "summary": "Day Unavailable",
+          "startTime": "",
+          "endTime": ""
+        };
+        eventTmp["startTime"]=event.startTime;
+        eventTmp["endTime"]=event.endTime;
+        tempd["events"].push(eventTmp);
+      });
+
+
+      newCal(tempd);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to load calendar');
+    });
 });
