@@ -173,3 +173,16 @@ app.listen(PORT, () => {
 });
 
 
+// make sure mongoose disconnects
+process.on('SIGINT', function() {
+  mongoose.connection.close(function () {
+    console.log('Mongoose disconnected on app termination');
+    process.exit(0);
+  });
+});
+process.on('SIGTERM ', function() {
+  mongoose.connection.close(function () {
+    console.log('Mongoose disconnected on app termination');
+    process.exit(0);
+  });
+});

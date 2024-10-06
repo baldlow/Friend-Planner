@@ -9,14 +9,12 @@ body {
 }
 
 .cr {
-  bottom: 1em;
   display: block;
-  position: relative;
+  /* position: relative; */
 }
 
 #create,
 #code {
-  display: inline-block;
 }
 
 .base {
@@ -28,17 +26,12 @@ body {
 }
 
 .parent {
-  margin: 10vh;
+  margin: 5vh;
   display: flex;
 }
 
 #toggle {
-  max-height: 30em;
-  margin-bottom: 15em;
-  position: relative;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-auto-rows: 1fr;
-  display: inline-grid;
+  min-height: 4em;
 
 }
 
@@ -82,17 +75,16 @@ body {
 }
 
 .inp {
-  margin-bottom: .5em;
-  position: relative;
+  /* margin-bottom: .5em; */
+  /* position: relative; */
 }
 
 #calendar {
   outline: 1px solid black;
   border-radius: 10px;
   overflow: hidden;
-  width: 80%;
+  width: 70%;
   margin: 0 30px 0 auto;
-  justify-content: center;
 }
 
 #calendar-header {
